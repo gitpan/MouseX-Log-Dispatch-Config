@@ -1,0 +1,46 @@
+package MouseX::Types::Log::Dispatch::Configurator;
+
+use strict;
+use warnings;
+use Log::Dispatch::Configurator;
+use Log::Dispatch::Configurator::AppConfig;
+use MouseX::Log::Dispatch::Configurator::HashRef;
+use Mouse::TypeRegistry;
+use MouseX::Types::Mouse qw(Str HashRef);
+use namespace::clean;
+
+require Mouse; # for Mouse::TypeRegistry (Mouse::load_class)
+
+our $VERSION = '0.01';
+
+class_type 'Log::Dispatch::Configurator'
+    => { class => 'Log::Dispatch::Configurator' };
+
+coerce 'Log::Dispatch::Configurator',
+    from Str,     via { Log::Dispatch::Configurator::AppConfig->new($_) },
+    from HashRef, via { MouseX::Log::Dispatch::Configurator::HashRef->new(config => $_) };
+
+1;
+
+=head1 NAME
+
+MouseX::Types::Log::Dispatch::Configurator - A Log::Dispatch::Configurator type library for Mouse
+
+=head1 TYPES
+
+=head2 Log::Dispatch::Configurator
+
+=head1 AUTHOR
+
+NAKAGAWA Masaki E<lt>masaki@cpan.orgE<gt>
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<MouseX::Types>, L<Log::Dispatch::Configurator::AppConfig>, L<MouseX::Log::Dispatch::Config>
+
+=cut

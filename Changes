@@ -1,0 +1,8 @@
+Revision history for Perl extension MouseX::Log::Dispatch::Config
+
+0.02
+        - no functional changes, no need to upgrade
+        - remove Configurator.pm
+
+0.01
+        - original version
