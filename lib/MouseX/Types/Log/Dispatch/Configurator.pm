@@ -17,8 +17,22 @@ class_type 'Log::Dispatch::Configurator'
     => { class => 'Log::Dispatch::Configurator' };
 
 coerce 'Log::Dispatch::Configurator',
-    from Str,     via { Log::Dispatch::Configurator::AppConfig->new($_) },
-    from HashRef, via { MouseX::Log::Dispatch::Configurator::HashRef->new(config => $_) };
+    from Str, via {
+        if (eval { require Log::Dispatch::Configurator::Any; 1 }) {
+            Log::Dispatch::Configurator::Any->new($_);
+        }
+        else {
+            Log::Dispatch::Configurator::AppConfig->new($_);
+        }
+    },
+    from HashRef, via {
+        if (eval { require Log::Dispatch::Configurator::Any; 1 }) {
+            Log::Dispatch::Configurator::Any->new($_);
+        }
+        else {
+            MouseX::Log::Dispatch::Configurator::HashRef->new(config => $_);
+        }
+    };
 
 1;
 

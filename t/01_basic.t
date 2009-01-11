@@ -1,46 +1,24 @@
 use Test::Base;
 use IO::Scalar;
 
-plan tests => 6 * blocks;
+plan tests => 5 * blocks;
 
 {
-    package FileLogger;
-    no warnings 'redefine';
+    package MyLogger;
     use Mouse;
     with 'MouseX::Log::Dispatch::Config';
-    has '+config' => (default => 't/log.cfg');
-
-    package HashLogger;
-    no warnings 'redefine';
-    use Mouse;
-    with 'MouseX::Log::Dispatch::Config';
-    has '+config' => (
-        default => sub {
-            +{
-                class     => 'Log::Dispatch::Screen',
-                min_level => 'debug',
-                stderr    => 1,
-                format    => '[%d] [%p] %m at %F line %L%n',
-            };
-        },
-    );
-
-    package CustomLogger;
-    no warnings 'redefine';
-    use Mouse;
-    use Log::Dispatch::Configurator::AppConfig;
-    with 'MouseX::Log::Dispatch::Config';
-    has '+config' => (
-        default => sub { Log::Dispatch::Configurator::AppConfig->new('t/log.cfg') },
-    );
 }
+
+filters { config => ['eval'] };
 
 run {
     my $block = shift;
 
-    my $log = $block->class->new;
+    my $log = MyLogger->new(
+        config => $block->file || $block->config
+    );
+
     isa_ok $log->logger => 'Log::Dispatch';
-    isa_ok $log->config => 'Log::Dispatch::Configurator';
 
     tie *STDERR, 'IO::Scalar', \my $err;
     local $SIG{__DIE__} = sub { untie *STDERR; die @_ };
@@ -58,10 +36,16 @@ run {
 
 __END__
 === str config
---- class: FileLogger
+--- file: t/log.cfg
 
 === hash config
---- class: HashLogger
+--- config
+{
+    class     => 'Log::Dispatch::Screen',
+    min_level => 'debug',
+    stderr    => 1,
+    format    => '[%d] [%p] %m at %F line %L%n',
+}
 
 === custom config
---- class: CustomLogger
+--- config: Log::Dispatch::Configurator::AppConfig->new('t/log.cfg')

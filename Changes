@@ -1,5 +1,8 @@
 Revision history for Perl extension MouseX::Log::Dispatch::Config
 
+0.03
+        - replace property "config" with "_logger_config"
+
 0.02
         - no functional changes, no need to upgrade
         - remove Configurator.pm

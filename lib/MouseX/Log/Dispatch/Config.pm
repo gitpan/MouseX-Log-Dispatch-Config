@@ -6,7 +6,7 @@ use MouseX::Types::Log::Dispatch::Configurator;
 use Log::Dispatch::Config;
 use namespace::clean -except => ['meta'];
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 has 'logger' => (
     is         => 'rw',
@@ -17,18 +17,19 @@ has 'logger' => (
     )],
 );
 
-has 'config' => (
+has '_logger_config' => (
     is        => 'rw',
     isa       => 'Log::Dispatch::Configurator',
     coerce    => 1,
-    predicate => 'has_config',
+    init_arg  => 'config',
+    predicate => 'has_logger_config',
 );
 
 sub _build_logger {
     my $self = shift;
 
-    if ($self->has_config) {
-        Log::Dispatch::Config->configure($self->config);
+    if ($self->has_logger_config) {
+        Log::Dispatch::Config->configure($self->_logger_config);
     }
 
     return Log::Dispatch::Config->instance;
@@ -38,41 +39,31 @@ no Mouse::Role; 1;
 
 =head1 NAME
 
-MouseX::Log::Dispatch::Config
+MouseX::Log::Dispatch::Config - A Mouse role for logging
 
 =head1 SYNOPSIS
 
     package MyLogger;
-    use MouseX::Log::Dispatch::Config;
-
-    # file-based (AppConfig style)
-    has '+config' => (default => '/path/to/log.cfg');
-
-    package HashLogger;
-    use MouseX::Log::Dispatch::Config;
-
-    # hash-based
-    has '+config' => (default => sub {
-        {
-            class     => 'Log::Dispatch::Screen',
-            min_level => 'debug',
-            stderr    => 1,
-            format    => '[%p] %m at %F line %L%n',
-        }
-    });
-
-    package CustomLogger;
-    use MouseX::Log::Dispatch::Config;
-    use Log::Dispatch::Configurator::YAML;
-
-    # custom configurator
-    has '+config' => (default => sub {
-        Log::Dispatch::Configurator::YAML->new('/path/to/log.yml');
-    });
+    use Mouse;
+    with 'MouseX::Log::Dispatch::Config';
 
     package main;
 
-    my $log = MyLogger->new;
+    # file-based (AppConfig style)
+    my $log = MyLogger->new(config => '/path/to/log.cfg');
+
+    # hash-based
+    my $log = MyLogger->new(config => {
+        class     => 'Log::Dispatch::Screen',
+        min_level => 'debug',
+        stderr    => 1,
+        format    => '[%p] %m at %F line %L%n',
+    });
+
+    # custom configurator
+    my $log = MyLogger->new(
+        config => Log::Dispatch::Configurator::YAML->new('/path/to/log.yml')
+    );
 
     $log->debug('foo');
     $log->logger->debug('bar'); # also works
@@ -85,6 +76,14 @@ MouseX::Log::Dispatch::Config
 This is a role which provides a L<Log::Dispatch::Config> logger.
 
 =head1 METHODS
+
+=head2 new(config => $config)
+
+This method accepts logger config which is C<Str>, C<HashRef> and
+C<Log::Dispatch::Configurator> object.
+
+Coerces from C<Str> and C<HashRef> via
+L<MouseX::Types::Log::Dispatch::Configurator>.
 
 =head2 log
 
@@ -109,8 +108,6 @@ This is a role which provides a L<Log::Dispatch::Config> logger.
 =head2 logger
 
 Returns a L<Log::Dispatch::Config> object.
-
-=head2 config
 
 =head1 AUTHOR
 
