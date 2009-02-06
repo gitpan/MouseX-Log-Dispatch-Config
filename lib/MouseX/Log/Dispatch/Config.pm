@@ -6,7 +6,7 @@ use MouseX::Types::Log::Dispatch::Configurator;
 use Log::Dispatch::Config;
 use namespace::clean -except => ['meta'];
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 has 'logger' => (
     is         => 'rw',

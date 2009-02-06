@@ -2,7 +2,8 @@ use inc::Module::Install;
 name 'MouseX-Log-Dispatch-Config';
 all_from 'lib/MouseX/Log/Dispatch/Config.pm';
 
-requires 'Mouse' => '0.14';
+requires 'Mouse' => '0.15';
+requires 'MouseX::Types' => '0.01';
 requires 'namespace::clean';
 requires 'Log::Dispatch::Config';
 

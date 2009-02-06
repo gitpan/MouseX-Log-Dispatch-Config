@@ -1,5 +1,8 @@
 Revision history for Perl extension MouseX::Log::Dispatch::Config
 
+0.04
+        - use Mouse 0.15 and MouseX::Types 0.01
+
 0.03
         - replace property "config" with "_logger_config"
 

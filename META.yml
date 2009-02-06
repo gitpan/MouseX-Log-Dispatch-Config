@@ -20,9 +20,10 @@ no_index:
 requires:
   Filter::Util::Call: 0
   Log::Dispatch::Config: 0
-  Mouse: 0.14
+  Mouse: 0.15
+  MouseX::Types: 0.01
   namespace::clean: 0
   perl: 5.8.1
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.03
+version: 0.04

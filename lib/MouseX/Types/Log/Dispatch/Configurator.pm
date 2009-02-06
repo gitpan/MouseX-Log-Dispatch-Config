@@ -4,12 +4,10 @@ use strict;
 use warnings;
 use Log::Dispatch::Configurator;
 use Log::Dispatch::Configurator::AppConfig;
+use Mouse::Util::TypeConstraints;
 use MouseX::Log::Dispatch::Configurator::HashRef;
-use Mouse::TypeRegistry;
 use MouseX::Types::Mouse qw(Str HashRef);
 use namespace::clean;
-
-require Mouse; # for Mouse::TypeRegistry (Mouse::load_class)
 
 our $VERSION = '0.01';
 
